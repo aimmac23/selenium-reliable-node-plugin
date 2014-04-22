@@ -64,6 +64,10 @@ public class ReliableProxy extends DefaultRemoteProxy implements SelfHealingProx
 		workingCapabilities.remove(capabilities);
 	}
 	
+	public boolean isCapabilityBroken(Map<String, Object> capability) {
+		return brokenCapabilities.contains(capability);
+	}
+	
 	public boolean isCapabilityUsable(Map<String, Object> capabilities) {
 		return workingCapabilities.contains(capabilities) && !brokenCapabilities.contains(capabilities);
 	}
