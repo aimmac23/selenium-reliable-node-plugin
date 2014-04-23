@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mooo.aimmac23</groupId>
     <artifactId>selenium-reliable-node-plugin</artifactId>
-    <version>0.3</version>
+    <version>0.4-SNAPSHOT</version>
     <name>selenium-reliable-node-plugin</name>
     <description>Selenium Grid plugin that records videos of running tests</description>
     <scm>
