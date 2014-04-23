@@ -14,7 +14,7 @@ import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 
 import com.mooo.aimmac23.hub.RemoteNodeTester;
 
-public class ReliableProxy extends DefaultRemoteProxy implements SelfHealingProxy {
+public class ReliableProxy extends DefaultRemoteProxy implements SelfHealingProxy, ReliabilityAwareProxy {
 	
 	private Set<Map<String, Object>> brokenCapabilities = new HashSet<Map<String, Object>>();
 	private Set<Map<String, Object>> workingCapabilities = new HashSet<Map<String, Object>>();
@@ -68,7 +68,7 @@ public class ReliableProxy extends DefaultRemoteProxy implements SelfHealingProx
 		return brokenCapabilities.contains(capability);
 	}
 	
-	public boolean isCapabilityUsable(Map<String, Object> capabilities) {
+	public boolean isCapabilityWorking(Map<String, Object> capabilities) {
 		return workingCapabilities.contains(capabilities) && !brokenCapabilities.contains(capabilities);
 	}
 	

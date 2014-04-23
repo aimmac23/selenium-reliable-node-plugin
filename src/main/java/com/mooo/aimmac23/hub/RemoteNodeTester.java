@@ -19,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.openqa.grid.web.Hub;
 
+import com.mooo.aimmac23.hub.proxy.ReliabilityAwareProxy;
 import com.mooo.aimmac23.hub.proxy.ReliableProxy;
 import com.mooo.aimmac23.hub.servlet.NodeTestingServlet;
 
@@ -31,7 +32,7 @@ public class RemoteNodeTester {
 	static {
 		executor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.MINUTES, new ArrayBlockingQueue<Runnable>(1000));
 	}
-	public static void testRemoteNode(final ReliableProxy proxy, final Map<String, Object> capabilities) {
+	public static void testRemoteNode(final ReliabilityAwareProxy proxy, final Map<String, Object> capabilities) {
 		executor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -60,11 +61,13 @@ public class RemoteNodeTester {
 					
 					if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 						log.info("Node tested OK: " + proxy.getId() + " for caps: " + capabilities);
+						proxy.setCapabilityAsWorking(capabilities);
 						
 					}
 					else {
 						log.warning("Node test failed for node: " + proxy.getId() + " for caps: " + capabilities);
 						log.warning("Status code: " + response.getStatusLine().getStatusCode() + " body: " + EntityUtils.toString(response.getEntity()));
+						proxy.setCapabilityAsBroken(capabilities);
 					}
 						
 				} catch(Exception e) {

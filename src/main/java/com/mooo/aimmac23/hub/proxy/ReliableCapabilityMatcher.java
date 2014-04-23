@@ -24,7 +24,7 @@ public class ReliableCapabilityMatcher implements CapabilityMatcher {
 		}
 		
 		// check to see if we're allowed to use that config
-		if(!proxy.isCapabilityUsable(currentCapability)) {
+		if(!proxy.isCapabilityWorking(currentCapability)) {
 			return false;
 		}
 		
