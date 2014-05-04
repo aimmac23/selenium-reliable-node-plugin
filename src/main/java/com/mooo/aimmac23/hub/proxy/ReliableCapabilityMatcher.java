@@ -1,10 +1,13 @@
 package com.mooo.aimmac23.hub.proxy;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 
 public class ReliableCapabilityMatcher implements CapabilityMatcher {
+	
+	private static Logger log = Logger.getLogger(ReliableCapabilityMatcher.class.getName());
 	
 	private CapabilityMatcher innerMatcher;
 	private ReliabilityAwareProxy proxy;
@@ -26,6 +29,7 @@ public class ReliableCapabilityMatcher implements CapabilityMatcher {
 		
 		// check to see if we're allowed to use that config
 		if(!proxy.isCapabilityWorking(currentCapability)) {
+			log.info("Node capability broken - not matching capability: " + currentCapability);
 			return false;
 		}
 		
