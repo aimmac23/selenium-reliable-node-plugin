@@ -7,9 +7,9 @@ import org.openqa.grid.internal.utils.CapabilityMatcher;
 public class ReliableCapabilityMatcher implements CapabilityMatcher {
 	
 	private CapabilityMatcher innerMatcher;
-	private ReliableProxy proxy;
+	private ReliabilityAwareProxy proxy;
 
-	public ReliableCapabilityMatcher(ReliableProxy proxy, CapabilityMatcher innerMatcher) {
+	public ReliableCapabilityMatcher(ReliabilityAwareProxy proxy, CapabilityMatcher innerMatcher) {
 		this.proxy = proxy;
 		this.innerMatcher = innerMatcher;
 	}
@@ -18,7 +18,8 @@ public class ReliableCapabilityMatcher implements CapabilityMatcher {
 	public boolean matches(Map<String, Object> currentCapability,
 			Map<String, Object> requestedCapability) {
 		
-		// to allow the node to be tested
+		// to allow the node to be tested - we're calling enough internal
+		// methods to ensure that we're calling this on the correct node
 		if(requestedCapability.containsKey("proxyId")) {
 			return innerMatcher.matches(currentCapability, requestedCapability);
 		}
