@@ -28,6 +28,8 @@ import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
+import com.mooo.aimmac23.hub.proxy.ReliabilityAwareProxy;
+
 import java.util.Map;
 
 public class WebProxyHtmlRendererBeta implements HtmlRenderer {
@@ -152,11 +154,30 @@ public class WebProxyHtmlRendererBeta implements HtmlRenderer {
   private String getSingleSlotHtml(TestSlot s, String icon) {
     StringBuilder builder = new StringBuilder();
     TestSession session = s.getSession();
+    String borderColour = null;
+    
+    if(s.getProxy() instanceof ReliabilityAwareProxy) {
+    	ReliabilityAwareProxy proxy = (ReliabilityAwareProxy) s.getProxy();
+    	if(proxy.isCapabilityWorking(s.getCapabilities())) {
+    		borderColour = "white";
+    	}
+    	else if(proxy.isCapabilityBroken(s.getCapabilities())) {
+    		borderColour = "red";
+    	}
+    	else {
+    		borderColour = "yellow";
+    	}
+    }
+    
     if (icon != null) {
       builder.append("<img ");
       builder.append("src='").append(icon).append("' width='16' height='16'");
     } else {
       builder.append("<a href='#' ");
+    }
+    
+    if(borderColour != null) {
+    	builder.append("style='border: " + borderColour + " solid 2px;'");
     }
 
     if (session != null) {
