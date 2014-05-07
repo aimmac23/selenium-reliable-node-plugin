@@ -34,14 +34,39 @@ public class RemoteNodeTester {
 	}
 	public static void testRemoteNode(final ReliabilityAwareProxy proxy, final Map<String, Object> capabilities) {
 		executor.execute(new Runnable() {
+			
+			private int runAttempts = 0;
+			
+			private void resubmitJob() throws InterruptedException {
+				// resubmit job
+				executor.submit(this);
+				// prevent fast spinning
+				Thread.sleep(500);
+				runAttempts++;
+				return;
+			}
 			@Override
 			public void run() {
 				
+				if(runAttempts > 10) {
+					log.warning("Maximum slot test attempts exceeded - marking as failed. proxy: " + 
+							proxy.getId() + " capabilities: " + capabilities);
+					proxy.setCapabilityAsBroken(capabilities);
+					return;
+				}
 				
 				try {
 					while(proxy.getRegistry().getProxyById(proxy.getId()) == null) {
-						log.info("Proxy " + proxy.getId() + " not registred yet - waiting");
-						Thread.sleep(500);
+						log.info("Proxy " + proxy.getId() + " not registered yet - deferring test");
+						resubmitJob();
+						return;
+					}
+					
+					if(100.0 == proxy.getResourceUsageInPercent()) {
+						log.info("Proxy " + proxy.getId() + " is busy - deferring test");
+						resubmitJob();
+						return;
+						
 					}
 					Hub hub = proxy.getRegistry().getHub();
 					URL url = new URL(hub.getUrl(), "/grid/admin/" + NodeTestingServlet.class.getSimpleName() + "/session");
@@ -59,10 +84,17 @@ public class RemoteNodeTester {
 					log.info("Hitting node testing servlet at: " + url);
 					HttpResponse response = client.execute(httpHost, request);
 					
-					if(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+					int statusCode = response.getStatusLine().getStatusCode();
+					
+					if(statusCode == HttpStatus.SC_OK) {
 						log.info("Node tested OK: " + proxy.getId() + " for caps: " + capabilities);
 						proxy.setCapabilityAsWorking(capabilities);
 						
+					}
+					else if(statusCode == 429) {
+						// test slot is temporarily unavailable - race condition?
+						log.warning("Test slot temporarily unavailable on proxy: " + proxy.getId() + " capabilities: " + capabilities);
+						resubmitJob();
 					}
 					else {
 						log.warning("Node test failed for node: " + proxy.getId() + " for caps: " + capabilities);

@@ -50,6 +50,12 @@ public class NodeTestingServlet extends RegistryBasedServlet {
 	      
 	      TestSession session = proxyById.getNewSession(capabilities);
 	      
+	      if(session == null) {
+	    	  log.warning("Test slot requested on proxy is unavailable. Proxy: " + proxyId + " capabilities: " + capabilities);
+	    	  resp.sendError(429, "Test Slot Unavailable");
+	    	  return;
+	      }
+	      
 	      session.forward(request, resp, true);
 	      	      
 	      if(session.getExternalKey() != null) {
