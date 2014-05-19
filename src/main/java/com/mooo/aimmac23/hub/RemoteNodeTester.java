@@ -91,6 +91,18 @@ public class RemoteNodeTester {
 						proxy.setCapabilityAsWorking(capabilities);
 						
 					}
+					else if(statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+						// older Selenium versions do an HTTP 302 with a location header set
+						if(response.getFirstHeader("Location") == null) {
+							// this combination is completely unusable
+							log.warning("Received and HTTP 302 response without a Location header! Marking proxy as broken: " + proxy.getId());
+							proxy.setCapabilityAsBroken(capabilities);
+						}
+						else {
+							log.info("Node tested OK (with old-style HTTP 302): " + proxy.getId() + " for caps: " + capabilities);
+							proxy.setCapabilityAsWorking(capabilities);
+						}
+					}
 					else if(statusCode == 429) {
 						// test slot is temporarily unavailable - race condition?
 						log.warning("Test slot temporarily unavailable on proxy: " + proxy.getId() + " capabilities: " + capabilities);
