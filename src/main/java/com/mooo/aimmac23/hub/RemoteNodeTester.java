@@ -84,34 +84,40 @@ public class RemoteNodeTester {
 					log.info("Hitting node testing servlet at: " + url);
 					HttpResponse response = client.execute(httpHost, request);
 					
-					int statusCode = response.getStatusLine().getStatusCode();
-					
-					if(statusCode == HttpStatus.SC_OK) {
-						log.info("Node tested OK: " + proxy.getId() + " for caps: " + capabilities);
-						proxy.setCapabilityAsWorking(capabilities);
+					try {
+						int statusCode = response.getStatusLine().getStatusCode();
 						
-					}
-					else if(statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
-						// older Selenium versions do an HTTP 302 with a location header set
-						if(response.getFirstHeader("Location") == null) {
-							// this combination is completely unusable
-							log.warning("Received and HTTP 302 response without a Location header! Marking proxy as broken: " + proxy.getId());
-							proxy.setCapabilityAsBroken(capabilities);
+						if(statusCode == HttpStatus.SC_OK) {
+							log.info("Node tested OK: " + proxy.getId() + " for caps: " + capabilities);
+							proxy.setCapabilityAsWorking(capabilities);
+							
+						}
+						else if(statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+							// older Selenium versions do an HTTP 302 with a location header set
+							if(response.getFirstHeader("Location") == null) {
+								// this combination is completely unusable
+								log.warning("Received and HTTP 302 response without a Location header! Marking proxy as broken: " + proxy.getId());
+								proxy.setCapabilityAsBroken(capabilities);
+							}
+							else {
+								log.info("Node tested OK (with old-style HTTP 302): " + proxy.getId() + " for caps: " + capabilities);
+								proxy.setCapabilityAsWorking(capabilities);
+							}
+						}
+						else if(statusCode == 429) {
+							// test slot is temporarily unavailable - race condition?
+							log.warning("Test slot temporarily unavailable on proxy: " + proxy.getId() + " capabilities: " + capabilities);
+							resubmitJob();
 						}
 						else {
-							log.info("Node tested OK (with old-style HTTP 302): " + proxy.getId() + " for caps: " + capabilities);
-							proxy.setCapabilityAsWorking(capabilities);
+							log.warning("Node test failed for node: " + proxy.getId() + " for caps: " + capabilities);
+							log.warning("Status code: " + response.getStatusLine().getStatusCode() + " body: " + EntityUtils.toString(response.getEntity()));
+							proxy.setCapabilityAsBroken(capabilities);
 						}
 					}
-					else if(statusCode == 429) {
-						// test slot is temporarily unavailable - race condition?
-						log.warning("Test slot temporarily unavailable on proxy: " + proxy.getId() + " capabilities: " + capabilities);
-						resubmitJob();
-					}
-					else {
-						log.warning("Node test failed for node: " + proxy.getId() + " for caps: " + capabilities);
-						log.warning("Status code: " + response.getStatusLine().getStatusCode() + " body: " + EntityUtils.toString(response.getEntity()));
-						proxy.setCapabilityAsBroken(capabilities);
+					finally {
+						// make sure we close the response - otherwise we will leak HTTP connections
+						response.getEntity().getContent().close();
 					}
 						
 				} catch(Exception e) {
