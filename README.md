@@ -24,11 +24,11 @@ Additional Features:
 
 On the node-side, specify the "-proxy" argument to make the Hub use the correct proxy:
 
-    java -jar selenium-server-standalone-2.40.0.jar -role node -proxy com.mooo.aimmac23.hub.proxy.ReliableProxy
+    java -jar selenium-server-standalone-2.40.0.jar -role node -proxy com.aimmac23.hub.proxy.ReliableProxy
 
 On the Hub side, startup using:
 
-    java -cp selenium-reliable-node-plugin-0.4.jar:selenium-server-standalone-2.40.0.jar org.openqa.grid.selenium.GridLauncher -role hub -servlets com.mooo.aimmac23.hub.servlet.NodeTestingServlet
+    java -cp selenium-reliable-node-plugin-0.7.jar:selenium-server-standalone-2.40.0.jar org.openqa.grid.selenium.GridLauncher -role hub -servlets com.aimmac23.hub.servlet.NodeTestingServlet
 
 ## Caveats
 
