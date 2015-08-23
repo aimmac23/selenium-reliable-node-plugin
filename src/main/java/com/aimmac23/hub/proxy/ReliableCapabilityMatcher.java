@@ -1,4 +1,4 @@
-package com.mooo.aimmac23.hub.proxy;
+package com.aimmac23.hub.proxy;
 
 import java.util.Map;
 import java.util.logging.Logger;

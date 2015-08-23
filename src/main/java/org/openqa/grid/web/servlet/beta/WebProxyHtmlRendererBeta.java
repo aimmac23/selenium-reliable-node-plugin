@@ -28,7 +28,7 @@ import org.openqa.grid.internal.utils.HtmlRenderer;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
 
-import com.mooo.aimmac23.hub.proxy.ReliabilityAwareProxy;
+import com.aimmac23.hub.proxy.ReliabilityAwareProxy;
 
 import java.util.Map;
 

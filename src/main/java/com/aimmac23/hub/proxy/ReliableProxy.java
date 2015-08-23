@@ -1,4 +1,4 @@
-package com.mooo.aimmac23.hub.proxy;
+package com.aimmac23.hub.proxy;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -12,7 +12,7 @@ import org.openqa.grid.internal.listeners.SelfHealingProxy;
 import org.openqa.grid.internal.utils.CapabilityMatcher;
 import org.openqa.grid.selenium.proxy.DefaultRemoteProxy;
 
-import com.mooo.aimmac23.hub.RemoteNodeTester;
+import com.aimmac23.hub.RemoteNodeTester;
 
 public class ReliableProxy extends DefaultRemoteProxy implements SelfHealingProxy, ReliabilityAwareProxy {
 	

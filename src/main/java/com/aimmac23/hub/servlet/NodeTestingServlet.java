@@ -1,4 +1,4 @@
-package com.mooo.aimmac23.hub.servlet;
+package com.aimmac23.hub.servlet;
 
 import java.io.IOException;
 import java.util.Map;

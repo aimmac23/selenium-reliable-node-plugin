@@ -1,4 +1,4 @@
-package com.mooo.aimmac23.hub;
+package com.aimmac23.hub;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -19,9 +19,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.openqa.grid.web.Hub;
 
-import com.mooo.aimmac23.hub.proxy.ReliabilityAwareProxy;
-import com.mooo.aimmac23.hub.proxy.ReliableProxy;
-import com.mooo.aimmac23.hub.servlet.NodeTestingServlet;
+import com.aimmac23.hub.proxy.ReliabilityAwareProxy;
+import com.aimmac23.hub.proxy.ReliableProxy;
+import com.aimmac23.hub.servlet.NodeTestingServlet;
 
 public class RemoteNodeTester {
 	
