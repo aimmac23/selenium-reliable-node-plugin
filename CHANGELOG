@@ -1,5 +1,5 @@
-Version 0.7 (unreleased)
-========================
+Version 0.7 24/08/2015
+======================
 
  * Fix an issue where we leak HTTP connections after testing the capabilities of a given node
  * Rename Maven artifact and packages, due to domain name change (com.mooo.aimmac23 => com.aimmac23)
